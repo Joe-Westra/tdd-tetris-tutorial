@@ -31,13 +31,13 @@ public class Step1_FallingBlocksTest extends Assert {
                     "...\n", board.toString());
         }
 
-//        @Test
-//        public void has_no_falling_blocks() {
-//            assertFalse(board.hasFalling());
-//        }
+        @Test
+        public void has_no_falling_blocks() {
+            assertFalse(board.hasFalling());
+        }
     }
 
-/*
+
     public class When_a_block_is_dropped {
 
         @Before
@@ -77,7 +77,7 @@ public class Step1_FallingBlocksTest extends Assert {
 //                    "...\n", board.toString());
 //        }
     }
-*/
+
 
 /*
     public class When_a_block_reaches_the_bottom {

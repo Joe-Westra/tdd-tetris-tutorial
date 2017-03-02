@@ -13,15 +13,29 @@ public class Board {
         this.rows = rows;
         this.columns = columns;
     }
-
+    @Override
     public String toString() {
         String s = "";
         for (int row = 0; row < rows; row++) {
             for (int col = 0; col < columns; col++) {
-                s += "?";
+                s += ".";
             }
             s += "\n";
         }
         return s;
     }
+
+    public boolean hasFalling(){
+        return false;
+    }
+
+
+
+    public class Block{
+        char shape;
+        Block(char type){
+            this.shape = type;
+        }
+    }
+
 }
