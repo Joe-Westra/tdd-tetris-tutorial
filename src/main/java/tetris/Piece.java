@@ -4,61 +4,81 @@
 
 package tetris;
 
+
 /**
  * Created by jdub on 02/03/17.
  *
  * Fiercely loyal to 2D arrays at this point.
  */
 public class Piece {
+
     private int rows;
     private int cols;
-    private char[][] p;
+    protected Block[][] p;
+
 
     public Piece(String str){
         rows = str.indexOf("\n");
         cols = str.split("\n").length;
-        p = new char[rows][cols];
+        p = new Block[rows][cols];
         str = str.replaceAll("\n","");
         for(int row = 0; row < rows; row++){
             for(int col = 0; col < cols; col++){
-                p[row][col] = str.charAt(col + (row * rows));
+                p[row][col] = new Block(str.charAt(col + (row * rows)));
             }
         }
     }
 
+
     public Piece(char[][] array){
-         this.p=array.clone();
-         this.cols = p[0].length;
-         this.rows = p.length;
+         this.cols = array[0].length;
+         this.rows = array.length;
+         p = new Block[rows][cols];
+         for(int row = 0; row < rows; row++){
+             for(int col = 0; col < cols; col++){
+                 p[rows][cols] = new Block(array[rows][cols]);
+             }
+         }
     }
+
+    public Piece(Block[][] temp) {
+        this.cols = temp[0].length;
+        this.rows = temp.length;
+        p = new Block[rows][cols];
+        for (int row = 0; row < rows; row++) {
+            for (int col = 0; col < cols; col++) {
+                p[row][col] = temp[row][col];
+            }
+        }
+    }
+
 
     @Override
     public String toString(){
         String s = "";
         for(int row = 0; row < rows; row++) {
             for (int col = 0; col < cols; col++) {
-                s += p[row][col];
+                s += p[row][col].shape;
             }
             s+="\n";
         }
         return s;
     }
 
-    protected Piece rotateRight(){
-        char[][] temp = new char[rows][cols];
 
+    protected Piece rotateRight(){
+        Block[][] temp = new Block[rows][cols];
         for(int row = 0; row < rows; row++) {
             for (int col = 0; col < cols; col++) {
                 temp[col][(rows-1) - row] = p[row][col];
             }
         }
-
         return (new Piece(temp));
     }
 
-    protected Piece rotateLeft(){
-        char[][] temp = new char[rows][cols];
 
+    protected Piece rotateLeft(){
+        Block[][] temp = new Block[rows][cols];
         for(int row = 0; row < rows; row++) {
             for (int col = 0; col < cols; col++) {
                 temp[(cols-1)-col][row] = p[row][col];
@@ -66,5 +86,4 @@ public class Piece {
         }
         return (new Piece(temp));
     }
-
 }
