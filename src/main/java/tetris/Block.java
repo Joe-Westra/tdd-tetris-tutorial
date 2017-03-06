@@ -8,6 +8,7 @@ package tetris;
  * Created by jdub on 01/03/17.
  */
 public class Block {
+    public static final char EMPTY = '.';
     char shape;
     int row;
     int col;
@@ -15,4 +16,5 @@ public class Block {
     Block(char type){
         this.shape = type;
     }
+
 }
