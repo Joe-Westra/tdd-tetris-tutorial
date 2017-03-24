@@ -7,46 +7,43 @@ package tetris;
 
 /**
  * Created by jdub on 02/03/17.
- *
- * Fiercely loyal to 2D arrays at this point.
  */
-public class Piece {
-
-    private int rows;
+public class Piece implements Droppable {
     private int cols;
+    private int rows;
     protected Block[][] p;
 
 
-    public Piece(String str){
-        rows = str.indexOf("\n");
-        cols = str.split("\n").length;
+    public Piece(String str) {
+        cols = str.indexOf("\n");
+        rows = str.split("\n").length;
         p = new Block[rows][cols];
-        str = str.replaceAll("\n","");
-        for(int row = 0; row < rows; row++){
-            for(int col = 0; col < cols; col++){
-                p[row][col] = new Block(str.charAt(col + (row * rows)));
+        str = str.replaceAll("\n", "");
+        for (int x = 0; x < rows; x++) {
+            for (int y = 0; y < cols; y++) {
+                p[x][y] = new Block(str.charAt(y + (x * cols)));
             }
         }
     }
 
 
-    public Piece(char[][] array){
-         this.cols = array[0].length;
-         this.rows = array.length;
-         p = new Block[rows][cols];
-         for(int row = 0; row < rows; row++){
-             for(int col = 0; col < cols; col++){
-                 p[rows][cols] = new Block(array[rows][cols]);
-             }
-         }
-    }
-
-    public Piece(Block[][] temp) {
-        this.cols = temp[0].length;
-        this.rows = temp.length;
+    public Piece(char[][] array) {
+        this.cols = array[0].length;
+        this.rows = array.length;
         p = new Block[rows][cols];
         for (int row = 0; row < rows; row++) {
             for (int col = 0; col < cols; col++) {
+                p[rows][cols] = new Block(array[rows][cols]);
+            }
+        }
+    }
+
+    public Piece(Block[][] temp) {
+        this.rows = temp[0].length;
+        this.cols = temp.length;
+        p = new Block[cols][rows];
+        for (int row = 0; row < cols; row++) {
+            for (int col = 0; col < rows; col++) {
                 p[row][col] = temp[row][col];
             }
         }
@@ -54,36 +51,65 @@ public class Piece {
 
 
     @Override
-    public String toString(){
+    public String toString() {
         String s = "";
-        for(int row = 0; row < rows; row++) {
-            for (int col = 0; col < cols; col++) {
-                s += p[row][col].shape;
+        for (int row = 0; row < cols; row++) {
+            for (int col = 0; col < rows; col++) {
+                s += p[row][col].getChar();
             }
-            s+="\n";
+            s += "\n";
         }
         return s;
     }
 
 
-    protected Piece rotateRight(){
-        Block[][] temp = new Block[rows][cols];
-        for(int row = 0; row < rows; row++) {
-            for (int col = 0; col < cols; col++) {
-                temp[col][(rows-1) - row] = p[row][col];
+    protected Piece rotateRight() {
+        Block[][] temp = new Block[cols][rows];
+        for (int row = 0; row < cols; row++) {
+            for (int col = 0; col < rows; col++) {
+                temp[col][(cols - 1) - row] = p[row][col];
             }
         }
         return (new Piece(temp));
     }
 
 
-    protected Piece rotateLeft(){
-        Block[][] temp = new Block[rows][cols];
-        for(int row = 0; row < rows; row++) {
-            for (int col = 0; col < cols; col++) {
-                temp[(cols-1)-col][row] = p[row][col];
+    protected Piece rotateLeft() {
+        Block[][] temp = new Block[cols][rows];
+        for (int row = 0; row < cols; row++) {
+            for (int col = 0; col < rows; col++) {
+                temp[(rows - 1) - col][row] = p[row][col];
             }
         }
         return (new Piece(temp));
     }
+
+
+
+    @Override
+    public int getWidth() {
+        return cols;
+    }
+
+    @Override
+    public void setWidth(int width) {
+        cols = width;
+    }
+
+    @Override
+    public int getHeight() {
+        return rows;
+    }
+
+    @Override
+    public void setHeight(int height) {
+        rows = height;
+    }
+
+    @Override
+    public Block getBlockAt(int x, int y) {
+        return p[x][y];
+    }
+
+
 }

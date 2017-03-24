@@ -7,34 +7,34 @@ package tetris;
 /**
  * Created by jdub on 03/03/17.
  */
-public enum Tetromino {
-    T_SHAPE(".T.\n" +
-            "TTT\n" +
-            "...\n"),
-    T_R( ".T.\n" +
-         ".TT\n" +
-         ".T.\n"),
-    T_D("...\n" +
-        "TTT\n" +
-        ".T.\n"),
-    T_L(".T.\n" +
-        "TT.\n" +
-        ".T.\n"),
-    I_SHAPE(".....\n" +
-            ".....\n" +
-            "IIII.\n" +
-            ".....\n" +
-            ".....\n"),
-    I_V("..I..\n" +
-        "..I..\n" +
-        "..I..\n" +
-        "..I..\n" +
-        ".....\n"),
-    O_SHAPE(".OO\n" +
-            ".OO\n" +
-            "...\n");
+public class Tetromino implements Droppable{
+
+    public static final Tetromino T_SHAPE =
+            new Tetromino(".T.\n" +
+                             "TTT\n" +
+                             "...\n");
+
+    public static final Tetromino I_SHAPE =
+            new Tetromino(".....\n" +
+                             ".....\n" +
+                             "IIII.\n" +
+                             ".....\n" +
+                             ".....\n");
+
+    public static final Tetromino O_SHAPE =
+            new Tetromino(".OO\n" +
+                             ".OO\n" +
+                             "...\n");
+
+    public static final Tetromino I_SHAPE_VERT =
+            new Tetromino(   "..I..\n" +
+                                "..I..\n" +
+                                "..I..\n" +
+                                "..I..\n" +
+                                ".....\n");
 
     private Piece shape;
+
 
     Tetromino(String s) {
         shape = new Piece(s);
@@ -42,59 +42,62 @@ public enum Tetromino {
 
 
     public Tetromino rotateRight(){
-        switch(this){
-            case T_SHAPE:
-                return T_R;
-            case T_R:
-                return T_D;
-            case T_D:
-                return T_L;
-            case T_L:
-                return T_SHAPE;
-            case I_SHAPE:
-                return I_V;
-            case I_V:
-                return I_SHAPE;
-            case O_SHAPE:
-                return O_SHAPE;
-        }
-        return null;
+        if(this == O_SHAPE)
+            return O_SHAPE;
+        else if(this == I_SHAPE)
+            return I_SHAPE_VERT;
+        else if(this == I_SHAPE_VERT)
+            return I_SHAPE;
+        else
+            return new Tetromino(shape.rotateRight().toString());
     }
 
 
 
     public Tetromino rotateLeft(){
-        switch(this){
-            case T_SHAPE:
-                return T_L;
-            case T_R:
-                return T_SHAPE;
-            case T_D:
-                return T_R;
-            case T_L:
-                return T_D;
-            case I_SHAPE:
-                return I_V;
-            case I_V:
-                return I_SHAPE;
-            case O_SHAPE:
-                return O_SHAPE;
-        }
-        return null;
+        if(this == O_SHAPE)
+            return O_SHAPE;
+        else if(this == I_SHAPE)
+            return I_SHAPE_VERT;
+        else if(this == I_SHAPE_VERT)
+            return I_SHAPE;
+        else
+            return new Tetromino(shape.rotateLeft().toString());
     }
+
     @Override
     public String toString(){
         return shape.toString();
     }
 
+
+
     public int getWidth(){
         return shape.p[0].length;
     }
+
+    @Override
+    public void setWidth(int width) {
+
+    }
+
     public int getHeight(){
         return shape.p.length;
+    }
+
+    @Override
+    public void setHeight(int height) {
+
+    }
+
+    @Override
+    public Block getBlockAt(int x, int y) {
+        return shape.getBlockAt(x,y);
     }
 
     public Piece getShape(){
         return shape;
     }
+
+
 }
