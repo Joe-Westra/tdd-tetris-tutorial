@@ -33,20 +33,14 @@ public class Block implements Droppable{
         return 1;
     }
 
-    @Override
-    public void setWidth(int width) {
 
-    }
 
     @Override
     public int getHeight() {
         return 1;
     }
 
-    @Override
-    public void setHeight(int height) {
 
-    }
 
 
     @Override

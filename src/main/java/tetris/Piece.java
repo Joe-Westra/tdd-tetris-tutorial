@@ -19,9 +19,9 @@ public class Piece implements Droppable {
         rows = str.split("\n").length;
         p = new Block[rows][cols];
         str = str.replaceAll("\n", "");
-        for (int x = 0; x < rows; x++) {
-            for (int y = 0; y < cols; y++) {
-                p[x][y] = new Block(str.charAt(y + (x * cols)));
+        for (int row = 0; row < rows; row++) {
+            for (int col = 0; col < cols; col++) {
+                p[row][col] = new Block(str.charAt(col + (row * cols)));
             }
         }
     }
@@ -91,24 +91,16 @@ public class Piece implements Droppable {
         return cols;
     }
 
-    @Override
-    public void setWidth(int width) {
-        cols = width;
-    }
 
     @Override
     public int getHeight() {
         return rows;
     }
 
-    @Override
-    public void setHeight(int height) {
-        rows = height;
-    }
 
     @Override
-    public Block getBlockAt(int x, int y) {
-        return p[x][y];
+    public Block getBlockAt(int row, int column) {
+        return p[row][column];
     }
 
 
