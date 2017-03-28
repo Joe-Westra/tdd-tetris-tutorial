@@ -76,23 +76,15 @@ public class Tetromino implements Droppable{
         return shape.p[0].length;
     }
 
-    @Override
-    public void setWidth(int width) {
-
-    }
 
     public int getHeight(){
         return shape.p.length;
     }
 
-    @Override
-    public void setHeight(int height) {
-
-    }
 
     @Override
-    public Block getBlockAt(int x, int y) {
-        return shape.getBlockAt(x,y);
+    public Block getBlockAt(int row, int column) {
+        return shape.getBlockAt(row,column);
     }
 
     public Piece getShape(){

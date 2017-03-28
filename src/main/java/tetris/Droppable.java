@@ -10,13 +10,6 @@ package tetris;
 public interface Droppable {
 
     int getWidth();
-    void setWidth(int width);
     int getHeight();
-    void setHeight(int height);
-//    Block[][] getShape();
-    Block getBlockAt(int x, int y);
-
-//    void drop(int boardWidth);
-//    void setOffset(int blocks);
-//    boolean dropOnTick();
+    Block getBlockAt(int row, int col);
 }

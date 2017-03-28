@@ -33,12 +33,7 @@ public class Board {
         }
         falling = new CurrentlyFalling();
         redrawBoard();
-        //needs to be dynamic
-/*
-        representation =  "...\n" +
-                          "...\n" +
-                          "...\n";
-*/
+
     }
 
     @Override
@@ -90,7 +85,7 @@ public class Board {
         if(CanBeDropped())
             DropALevel();
         else {
-            LockPieceinPlace();
+            LockPieceInPlace();
         }
         redrawBoard();
     }
@@ -108,13 +103,13 @@ public class Board {
             return false;
     }
 
-    private void LockPieceinPlace() {
+    private void LockPieceInPlace() {
         for (int row = 0; row < rows; row++) {
-            for (int y = 0; y < columns; y++) {
+            for (int col = 0; col < columns; col++) {
                 if (row >= + falling.getY() && row < falling.getY() + falling.getDroppable().getHeight()
-                        && y >= + falling.getX() && y < falling.getX() + falling.getDroppable().getWidth()){
-                        if (falling.getDroppable().getBlockAt(row-falling.getX(),y-falling.getY()).getChar() != Block.EMPTY)
-                            area[row][y]=falling.getDroppable().getBlockAt(row-falling.getX(),y-falling.getY());
+                        && col >= + falling.getX() && col < falling.getX() + falling.getDroppable().getWidth()){
+                        if (falling.getDroppable().getBlockAt(row-falling.getY(),col-falling.getX()).getChar() != Block.EMPTY)
+                            area[row][col]=falling.getDroppable().getBlockAt(row-falling.getY(),col-falling.getX());
                 }
 
             }
@@ -127,21 +122,58 @@ public class Board {
     }
 
     private boolean CanBeDropped() {
+        /*
+        THIS APPROACH DOESN'T WORK, need to check each square individually.
+        determine pieces actual bottom (AB)
+        check to see if AB +1 is greater than the board height
+        check if AB+1's height encounters a block on the board.
+
+
+
+        check to see if AB +1 is greater than the board height
+        iterate over falling's block array
+            for each non empty block, check to see if the block below is non empty
+
+
+
+         */
         final int INCREMENT = 1;
         int fallingWidth = falling.getDroppable().getWidth();
         int fallingHeight = falling.getDroppable().getHeight();
-        int fallingY = falling.getY() + INCREMENT;
+        int fallingY = falling.getY();
         int fallingX = falling.getX();
 
-        if (fallingY >= columns)
+        System.out.println(representation);
+        if (fallingY + INCREMENT > rows)
             return false;
-        for (int cols = 0; cols < fallingHeight; cols++) {
-            for (int rows = 0; rows < fallingWidth; rows++) {
-                if(area[cols + fallingY][rows + fallingX].getChar() != Block.EMPTY
-                        && falling.getDroppable().getBlockAt(cols,rows).getChar() != Block.EMPTY)
-                    return false;
+
+        for (int y = 0; y < fallingHeight; y++) {
+            for (int x = 0; x < fallingWidth; x++) {
+                if(falling.getDroppable().getBlockAt(y,x).getChar() != Block.EMPTY){
+                    if(y + fallingY  + INCREMENT >= rows)
+                        return false;
+                    else if(area[y + fallingY  + INCREMENT][x + fallingX].getChar() != Block.EMPTY)
+                        return false;
+                }
+
             }
         }
+
+
+
+        /*for (int cols = 0; cols < fallingHeight; cols++) {
+            for (int rows = 0; rows < fallingWidth; rows++) {
+                System.out.printf("attempting to access %d, %d\n",cols + fallingY,rows + fallingX);
+                if (fallingY + cols >= this.rows)
+                    return false;
+                if(falling.getDroppable().getBlockAt(cols,rows).getChar() != Block.EMPTY
+                        && area[cols + fallingY][rows + fallingX].getChar() != Block.EMPTY)
+                    return false;
+
+            }
+
+
+        }*/
         return true;
     }
 
@@ -155,7 +187,6 @@ class CurrentlyFalling{
     private int x;
     private int y;
     private Droppable falling;
-    private Block[][] area;
     private boolean isFalling = false;
 
 

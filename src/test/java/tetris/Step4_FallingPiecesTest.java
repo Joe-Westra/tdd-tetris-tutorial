@@ -43,7 +43,6 @@ public class Step4_FallingPiecesTest extends Assert {
     }
 
 
-/*
     public class When_a_piece_reaches_the_bottom {
 
         @Before
@@ -67,22 +66,20 @@ public class Step4_FallingPiecesTest extends Assert {
             assertTrue(board.hasFalling());
         }
 
-//        @Test
-//        public void it_stops_when_it_hits_the_bottom() {
-//            board.tick();
-//            assertEquals("" +
-//                    "........\n" +
-//                    "........\n" +
-//                    "........\n" +
-//                    "........\n" +
-//                    "....T...\n" +
-//                    "...TTT..\n", board.toString());
-//            assertFalse(board.hasFalling());
-//        }
+        @Test
+        public void it_stops_when_it_hits_the_bottom() {
+            board.tick();
+            assertEquals("" +
+                    "........\n" +
+                    "........\n" +
+                    "........\n" +
+                    "........\n" +
+                    "....T...\n" +
+                    "...TTT..\n", board.toString());
+            assertFalse(board.hasFalling());
+        }
     }
-*/
 
-/*
     public class When_a_piece_lands_on_another_piece {
 
         @Before
@@ -119,18 +116,17 @@ public class Step4_FallingPiecesTest extends Assert {
             assertTrue(board.hasFalling());
         }
 
-//        @Test
-//        public void it_stops_when_it_hits_the_other_piece() {
-//            board.tick();
-//            assertEquals("" +
-//                    "........\n" +
-//                    "........\n" +
-//                    "....T...\n" +
-//                    "...TTT..\n" +
-//                    "....T...\n" +
-//                    "...TTT..\n", board.toString());
-//            assertFalse(board.hasFalling());
-//        }
+        @Test
+        public void it_stops_when_it_hits_the_other_piece() {
+            board.tick();
+            assertEquals("" +
+                    "........\n" +
+                    "........\n" +
+                    "....T...\n" +
+                    "...TTT..\n" +
+                    "....T...\n" +
+                    "...TTT..\n", board.toString());
+            assertFalse(board.hasFalling());
+        }
     }
-*/
 }
