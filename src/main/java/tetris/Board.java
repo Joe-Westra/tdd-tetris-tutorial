@@ -49,12 +49,39 @@ public class Board {
         if(! falling.isFalling()) {
             falling.setDroppable(piece);
             falling.setX(findMiddle(falling.getDroppable()));
-            falling.setY(-1);
+            falling.setY(getStartingHeight());
             tick();
         }else
             throw new IllegalStateException("already falling");
     }
 
+    /**
+     * Determines the highest non-empty for in the 'falling' piece
+     * and returns that value - 1, so as to ensure dropping a piece
+     * starts it as high up on the board as possible.
+     * @return int top row
+     */
+    private int getStartingHeight() {
+        Droppable temp = falling.getDroppable();
+        for (int row = 0; row < temp.getHeight(); row++) {
+            for (int col = 0; col < temp.getWidth(); col++) {
+                if(temp.getBlockAt(row,col).getChar() != Block.EMPTY)
+                    return (row +1) * -1;
+            }
+        }
+        return -1;
+    }
+
+    /**
+     * Sadly, this method is kind of bogus.  I assumed that the shape creator
+     * made tetromino boxes to fit the shapes exactly, or to be at least centered.
+     * This is not the case.  This method needs to be modified to:
+     *  -determine the coordinates of the smallest box that contains the tetromino
+     *  -and return half that value.
+     *  This was discovered via a broken O-Shape.
+     * @param piece
+     * @return
+     */
     private int findMiddle(Droppable piece){
         int fallingWidth = piece.getWidth();
         return (columns - fallingWidth) % 2 == 0
@@ -85,7 +112,7 @@ public class Board {
         if(CanBeDropped())
             DropALevel();
         else {
-            LockPieceInPlace();
+            lockPieceInPlace();
         }
         redrawBoard();
     }
@@ -103,7 +130,7 @@ public class Board {
             return false;
     }
 
-    private void LockPieceInPlace() {
+    private void lockPieceInPlace() {
         for (int row = 0; row < rows; row++) {
             for (int col = 0; col < columns; col++) {
                 if (row >= + falling.getY() && row < falling.getY() + falling.getDroppable().getHeight()
@@ -122,62 +149,59 @@ public class Board {
     }
 
     private boolean CanBeDropped() {
-        /*
-        THIS APPROACH DOESN'T WORK, need to check each square individually.
-        determine pieces actual bottom (AB)
-        check to see if AB +1 is greater than the board height
-        check if AB+1's height encounters a block on the board.
+        return testAdjustment(1,0);
+    }
 
 
+    public void moveLeft() {
+        if(testAdjustment(0,-1)) {
+            falling.setX(falling.getX() - 1);
+            redrawBoard();
+        }
+    }
+    public boolean testAdjustment(int rowShift, int colShift){
 
-        check to see if AB +1 is greater than the board height
-        iterate over falling's block array
-            for each non empty block, check to see if the block below is non empty
-
-
-
-         */
-        final int INCREMENT = 1;
         int fallingWidth = falling.getDroppable().getWidth();
         int fallingHeight = falling.getDroppable().getHeight();
         int fallingY = falling.getY();
         int fallingX = falling.getX();
 
         System.out.println(representation);
-        if (fallingY + INCREMENT > rows)
+        if (fallingY + rowShift > rows)
             return false;
 
         for (int y = 0; y < fallingHeight; y++) {
             for (int x = 0; x < fallingWidth; x++) {
-                if(falling.getDroppable().getBlockAt(y,x).getChar() != Block.EMPTY){
-                    if(y + fallingY  + INCREMENT >= rows)
+                if(y + fallingY + rowShift >= 0
+                    && falling.getDroppable().getBlockAt(y,x).getChar() != Block.EMPTY){
+                    if(y + fallingY  + rowShift >= rows
+                            || x + fallingX + colShift >= columns
+                            || x + fallingX + colShift < 0)
                         return false;
-                    else if(area[y + fallingY  + INCREMENT][x + fallingX].getChar() != Block.EMPTY)
+                    else if(area[y + fallingY  + rowShift][x + fallingX +colShift].getChar() != Block.EMPTY)
                         return false;
                 }
 
             }
         }
-
-
-
-        /*for (int cols = 0; cols < fallingHeight; cols++) {
-            for (int rows = 0; rows < fallingWidth; rows++) {
-                System.out.printf("attempting to access %d, %d\n",cols + fallingY,rows + fallingX);
-                if (fallingY + cols >= this.rows)
-                    return false;
-                if(falling.getDroppable().getBlockAt(cols,rows).getChar() != Block.EMPTY
-                        && area[cols + fallingY][rows + fallingX].getChar() != Block.EMPTY)
-                    return false;
-
-            }
-
-
-        }*/
         return true;
     }
 
 
+    public void moveRight() {
+        if(testAdjustment(0,1)) {
+            falling.setX(falling.getX() + 1);
+            redrawBoard();
+        }
+    }
+
+    public void moveDown() {
+        if(testAdjustment(1,0)) {
+            falling.setY(falling.getY() + 1);
+            redrawBoard();
+        }else
+            lockPieceInPlace();
+    }
 }
 
 
