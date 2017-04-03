@@ -48,6 +48,16 @@ public class Block implements Droppable{
         return new Block(shape);
     }
 
+    @Override
+    public Droppable rotateRight() {
+        return new Block(this.shape);
+    }
+
+    @Override
+    public Droppable rotateLeft() {
+        return new Block(this.shape);
+    }
+
     public char getChar() {
         return shape;
     }

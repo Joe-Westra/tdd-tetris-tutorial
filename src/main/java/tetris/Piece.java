@@ -63,7 +63,7 @@ public class Piece implements Droppable {
     }
 
 
-    protected Piece rotateRight() {
+    public Piece rotateRight() {
         Block[][] temp = new Block[cols][rows];
         for (int row = 0; row < cols; row++) {
             for (int col = 0; col < rows; col++) {
@@ -74,7 +74,7 @@ public class Piece implements Droppable {
     }
 
 
-    protected Piece rotateLeft() {
+    public Piece rotateLeft() {
         Block[][] temp = new Block[cols][rows];
         for (int row = 0; row < cols; row++) {
             for (int col = 0; col < rows; col++) {

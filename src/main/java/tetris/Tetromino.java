@@ -8,6 +8,7 @@ package tetris;
  * Created by jdub on 03/03/17.
  */
 public class Tetromino implements Droppable{
+    private Piece shape;
 
     public static final Tetromino T_SHAPE =
             new Tetromino(".T.\n" +
@@ -33,13 +34,9 @@ public class Tetromino implements Droppable{
                                 "..I..\n" +
                                 ".....\n");
 
-    private Piece shape;
-
-
     Tetromino(String s) {
         shape = new Piece(s);
     }
-
 
     public Tetromino rotateRight(){
         if(this == O_SHAPE)
@@ -51,8 +48,6 @@ public class Tetromino implements Droppable{
         else
             return new Tetromino(shape.rotateRight().toString());
     }
-
-
 
     public Tetromino rotateLeft(){
         if(this == O_SHAPE)
@@ -70,26 +65,17 @@ public class Tetromino implements Droppable{
         return shape.toString();
     }
 
-
-
     public int getWidth(){
         return shape.p[0].length;
     }
-
 
     public int getHeight(){
         return shape.p.length;
     }
 
-
     @Override
     public Block getBlockAt(int row, int column) {
         return shape.getBlockAt(row,column);
     }
-
-    public Piece getShape(){
-        return shape;
-    }
-
 
 }
