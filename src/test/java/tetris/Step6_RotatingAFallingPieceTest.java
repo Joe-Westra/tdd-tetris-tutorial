@@ -163,8 +163,6 @@ public class Step6_RotatingAFallingPieceTest extends Assert {
                     "........\n" +
                     "........\n", board.toString());
         }
-
-
     }
 
     public class Rotations_at_the_top_row {
@@ -195,7 +193,6 @@ public class Step6_RotatingAFallingPieceTest extends Assert {
                     "........\n", board.toString());
         }
 
-
         @Test
         public void are_invalid_for_I_pieces() {
             board.drop(Tetromino.I_SHAPE);
@@ -208,13 +205,13 @@ public class Step6_RotatingAFallingPieceTest extends Assert {
                     "........\n" +
                     "........\n", board.toString());
         }
-
     }
 
 
     public class Wall_kicks_work_for_T_pieces {
 
         /*
+        From a Tetris Authority, describing the rotation algorithm:
          "Up to 3 locations are tried, in this order, before rotation will fail:
         Basic rotation
         1 space right of basic rotation
@@ -290,7 +287,7 @@ public class Step6_RotatingAFallingPieceTest extends Assert {
             board.moveRight();
             board.moveRight();
             board.moveRight();
-            assertEquals(""+
+            assertEquals("" +
                     "........\n" +
                     ".......I\n" +
                     ".......I\n" +
@@ -298,7 +295,7 @@ public class Step6_RotatingAFallingPieceTest extends Assert {
                     ".......I\n" +
                     "........\n", board.toString());
             board.rotateRight();
-            assertEquals(""+
+            assertEquals("" +
                     "........\n" +
                     "........\n" +
                     "....IIII\n" +
@@ -314,7 +311,7 @@ public class Step6_RotatingAFallingPieceTest extends Assert {
             board.moveLeft();
             board.moveLeft();
             board.moveLeft();
-            assertEquals(""+
+            assertEquals("" +
                     "........\n" +
                     "I.......\n" +
                     "I.......\n" +
@@ -322,7 +319,7 @@ public class Step6_RotatingAFallingPieceTest extends Assert {
                     "I.......\n" +
                     "........\n", board.toString());
             board.rotateRight();
-            assertEquals(""+
+            assertEquals("" +
                     "........\n" +
                     "........\n" +
                     "IIII....\n" +
@@ -331,7 +328,82 @@ public class Step6_RotatingAFallingPieceTest extends Assert {
                     "........\n", board.toString());
         }
 
+    }
+
+    public class Pieces_might_be_in_the_way {
+        @Before
+        public void create_a_mess() {
+            board.drop(Tetromino.I_SHAPE);
+            board.tick();
+            board.rotateRight();
+            board.moveRight();
+            board.moveRight();
+            board.moveRight();
+            board.tick();
+            board.tick();
+            board.tick();
+            board.drop(Tetromino.O_SHAPE);
+            board.moveRight();
+            board.moveRight();
+            board.moveRight();
+            board.tick();
+            board.drop(Tetromino.I_SHAPE);
+            board.tick();
+            board.tick();
+            board.moveRight();
+            board.tick();
+            board.tick();
+            board.tick();
+            board.tick();
         }
+
+        @Test
+        public void the_boards_a_mess() {
+            assertEquals("" +
+                    "......OO\n" +
+                    "......OO\n" +
+                    ".......I\n" +
+                    ".......I\n" +
+                    ".......I\n" +
+                    "...IIIII\n", board.toString());
+        }
+
+        @Test
+        public void they_offer_the_same_wallkick() {
+            board.drop(Tetromino.T_SHAPE);
+            board.rotateLeft();
+            board.moveRight();
+            board.rotateRight();
+            assertEquals("" +
+                    "....T.OO\n" +
+                    "...TTTOO\n" +
+                    ".......I\n" +
+                    ".......I\n" +
+                    ".......I\n" +
+                    "...IIIII\n", board.toString());
+            board.tick();
+            board.moveRight();
+            board.rotateLeft();
+            assertEquals("" +
+                    "......OO\n" +
+                    ".....TOO\n" +
+                    "....TT.I\n" +
+                    ".....T.I\n" +
+                    ".......I\n" +
+                    "...IIIII\n", board.toString());
+            board.tick();
+            board.moveRight();
+            board.rotateRight();
+            assertEquals("" +
+                    "......OO\n" +
+                    "......OO\n" +
+                    ".....T.I\n" +
+                    "....TTTI\n" +
+                    ".......I\n" +
+                    "...IIIII\n", board.toString());
+        }
+    }
+
 
     // TODO: a falling piece can be rotated clockwise
     // TODO: a falling piece can be rotated counter-clockwise

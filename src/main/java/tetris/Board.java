@@ -156,7 +156,6 @@ public class Board {
         if (falling.getDroppable() == null) {
             return false;
         }
-
         int fallY = falling.getY();
         int fallX = falling.getX();
         if (x >= +fallY && x < fallY + falling.getDroppable().getHeight()
@@ -206,7 +205,6 @@ public class Board {
 
     private boolean testAdjustment(int rowShift, int colShift) {
         return testAdjustment(falling.getDroppable(), rowShift, colShift);
-
     }
 
 
@@ -266,39 +264,33 @@ public class Board {
      */
     public void rotateRight() {
         Droppable d = falling.getDroppable().rotateRight();
+        loopThroughRotationAttempts(d);
+    }
+
+    private void loopThroughRotationAttempts(Droppable d) {
         if (!attemptRotation(d, 0, 0)) {
             if (!attemptRotation(d, 0, 1)) {
-                attemptRotation(d, 0, -1);
+               if(! attemptRotation(d, 0, -1)
+                   && d.equals(Tetromino.I_SHAPE)){
+                   System.out.println("calling rotate a third time");
+                   attemptRotation(d, 0, 2);
+               }
             }
-        }
-        if (d.toString() == Tetromino.I_SHAPE.toString()) {
-            attemptRotation(d, 0, 2);
         }
     }
 
     public void rotateLeft() {
         Droppable d = falling.getDroppable().rotateLeft();
-        if (!attemptRotation(d, 0, 0)) {
-            if (!attemptRotation(d, 0, 1)) {
-                attemptRotation(d, 0, -1);
-            }
-        }
-        if (d.toString() == Tetromino.I_SHAPE.toString()) {
-            attemptRotation(d, 0, 2);
-        }
+        loopThroughRotationAttempts(d);
     }
 
     private boolean attemptRotation(Droppable d, int yShift, int xShift) {
         int yOffset = yShift;
         int xOffset = xShift;
-        //Need cases for all Tetrominos?
         if (d.toString().equals(Tetromino.I_SHAPE.toString())) {
             yOffset = -1;
         } else if (d.toString().equals(Tetromino.I_SHAPE_VERT.toString())) {
             yOffset = 1;
-        } else if (d.toString().equals(Tetromino.T_SHAPE.toString())
-                || d.toString().equals(Tetromino.T_SHAPE.rotateRight().rotateRight().toString())) {
-
         }
         if (testAdjustment(d, yOffset, xOffset)) {
             falling.setDroppable(d);
