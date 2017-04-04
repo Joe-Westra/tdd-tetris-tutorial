@@ -12,4 +12,6 @@ public interface Droppable {
     int getWidth();
     int getHeight();
     Block getBlockAt(int row, int col);
+    Droppable rotateRight();
+    Droppable rotateLeft();
 }
