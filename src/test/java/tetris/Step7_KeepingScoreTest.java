@@ -12,12 +12,22 @@ import org.junit.runner.RunWith;
 @RunWith(NestedJUnit.class)
 public class Step7_KeepingScoreTest extends Assert {
 
-    public static Board board = new Board(6, 8);
+    public final Board board = new Board(6, 8);
 
-    public class full_rows_are_removed {
+
+
+    /**
+     * After re-reading the rules of TDD it's evident that I have broken
+     * pretty much all of them.  At this point it in the introduction
+     * it would be wise to learn more about the basics.
+     */
+
+
+    public class full_rows_are_removed_and_scored {
 
         @Before
         public void load_the_board() {
+            board.addScoreBoard(new ScoreBoard());
             board.drop(Tetromino.I_SHAPE);
             board.moveLeft();
             board.moveLeft();
@@ -31,6 +41,11 @@ public class Step7_KeepingScoreTest extends Assert {
             board.tick();
             board.tick();
             board.tick();
+        }
+
+        @Test
+        public void the_score_starts_at_0() {
+            assertTrue(board.getScore() == 0);
         }
 
         @Test
@@ -58,7 +73,7 @@ public class Step7_KeepingScoreTest extends Assert {
         }
 
         @Test
-        public void multiple_rows_are_cleared(){
+        public void multiple_rows_are_cleared() {
             board.moveLeft();
             board.moveLeft();
             board.tick();
@@ -85,19 +100,72 @@ public class Step7_KeepingScoreTest extends Assert {
                     "........\n" +
                     "........\n" +
                     "........\n" +
-                    "........\n",board.toString());
+                    "........\n", board.toString());
+            assertTrue(board.getScore() == 2);
+
+        }
+
+    }
+
+    public class cleared_rows_drop_above_rows {
+
+        @Before
+        public void setup_board() {
+            board.addScoreBoard(new ScoreBoard());
+
+            board.drop(Tetromino.O_SHAPE);
+            board.moveLeft();
+            board.moveLeft();
+            board.moveLeft();
+            board.tick();
+            board.tick();
+            board.tick();
+            board.tick();
+            board.tick();
+            board.drop(Tetromino.O_SHAPE);
+            board.moveLeft();
+            board.tick();
+            board.tick();
+            board.tick();
+            board.tick();
+            board.tick();
+            board.drop(Tetromino.O_SHAPE);
+            board.moveRight();
+            board.tick();
+            board.tick();
+            board.tick();
+            board.tick();
+            board.tick();
+            board.drop(Tetromino.T_SHAPE);
+            board.moveLeft();
+            board.moveLeft();
+            board.moveLeft();
+            board.tick();
+            board.tick();
+            board.tick();
+            board.drop(Tetromino.O_SHAPE);
+            board.moveRight();
+            board.moveRight();
+            board.moveRight();
+            board.tick();
+            board.tick();
+            board.tick();
+            board.tick();
         }
 
         @Test
-        public void rows_above_are_dropped(){
-            board.rotateRight();
+        public void multiple_level_drop() {
             board.tick();
+            assertEquals("" +
+                    "........\n" +
+                    "........\n" +
+                    "........\n" +
+                    "........\n" +
+                    ".T......\n" +
+                    "TTT.....\n", board.toString());
+            assertTrue(board.getScore() == 2);
         }
     }
 
 
-/*        @Test
-        public void the_score_starts_at_0() {
-            assertTrue(board.getScore() == 0);
-        }*/
 }

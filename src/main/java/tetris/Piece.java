@@ -27,17 +27,6 @@ public class Piece implements Droppable {
     }
 
 
-    public Piece(char[][] array) {
-        this.cols = array[0].length;
-        this.rows = array.length;
-        p = new Block[rows][cols];
-        for (int row = 0; row < rows; row++) {
-            for (int col = 0; col < cols; col++) {
-                p[rows][cols] = new Block(array[rows][cols]);
-            }
-        }
-    }
-
     public Piece(Block[][] temp) {
         this.rows = temp[0].length;
         this.cols = temp.length;
@@ -47,19 +36,6 @@ public class Piece implements Droppable {
                 p[row][col] = temp[row][col];
             }
         }
-    }
-
-
-    @Override
-    public String toString() {
-        String s = "";
-        for (int row = 0; row < cols; row++) {
-            for (int col = 0; col < rows; col++) {
-                s += p[row][col].getChar();
-            }
-            s += "\n";
-        }
-        return s;
     }
 
 
@@ -85,23 +61,30 @@ public class Piece implements Droppable {
     }
 
 
+    @Override
+    public String toString() {
+        String s = "";
+        for (int row = 0; row < cols; row++) {
+            for (int col = 0; col < rows; col++) {
+                s += p[row][col].getChar();
+            }
+            s += "\n";
+        }
+        return s;
+    }
 
     @Override
     public int getWidth() {
         return cols;
     }
 
-
     @Override
     public int getHeight() {
         return rows;
     }
 
-
     @Override
     public Block getBlockAt(int row, int column) {
         return p[row][column];
     }
-
-
 }
