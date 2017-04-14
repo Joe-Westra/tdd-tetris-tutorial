@@ -7,41 +7,32 @@ package tetris;
 /**
  * Created by jdub on 01/03/17.
  */
-public class Block implements Droppable{
+public class Block implements Droppable {
     public static final char EMPTY = '.';
-
-    public void setShape(char shape) {
-        this.shape = shape;
-    }
 
     private char shape;
 
-
-
-    Block(){
+    Block() {
         this(EMPTY);
-
     }
 
-    Block(char type){
+    Block(char type) {
         shape = type;
     }
 
+    public char getChar() {
+        return shape;
+    }
 
     @Override
     public int getWidth() {
         return 1;
     }
 
-
-
     @Override
     public int getHeight() {
         return 1;
     }
-
-
-
 
     @Override
     public Block getBlockAt(int x, int y) {
@@ -57,10 +48,5 @@ public class Block implements Droppable{
     public Droppable rotateLeft() {
         return new Block(this.shape);
     }
-
-    public char getChar() {
-        return shape;
-    }
-
 
 }

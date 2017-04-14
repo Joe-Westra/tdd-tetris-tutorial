@@ -20,6 +20,7 @@ public class Board {
     private CurrentlyFalling falling;
     private Block[][] area;
     private String representation;
+    private ScoreBoard scoreKeeper;
 
 
     public Board(int rows, int columns) {
@@ -45,6 +46,12 @@ public class Board {
         return falling.isFalling();
     }
 
+
+    /**
+     * Drops a new piece from the middle top of the board.
+     *
+     * @param piece
+     */
     protected void drop(Droppable piece) {
         if (!falling.isFalling()) {
             falling.setDroppable(piece);
@@ -76,15 +83,11 @@ public class Board {
     }
 
     /**
-     * Sadly, this method is kind of bogus.  I assumed that the shape creator
-     * made tetromino boxes to fit the shapes exactly, or to be at least centered.
-     * This is not the case.  This method needs to be modified to:
-     * -determine the coordinates of the smallest box that contains the tetromino
-     * -and return half that value.
-     * This was discovered via a broken O-Shape.
+     * Determines the Actual Width of the piece (excludes empty columns from Tet)
+     * and information that centers the piece on the board
      *
      * @param piece
-     * @return
+     * @return an integer x-offset of squares from the left side of the board
      */
     private int findMiddle(Droppable piece) {
         int colStart = 0;
@@ -110,19 +113,15 @@ public class Board {
         }
 
         int actualWidth = (colEnd - colStart + 1);
-
-
         int xOffset = (int) Math.ceil((columns - actualWidth) / 2.0);
-        System.out.println("xOffset =" + xOffset);
-        if (piece.getWidth() == actualWidth) {
-            return xOffset;
-        } else {
-            return xOffset + (piece.getWidth() - actualWidth - colStart) - 1;
-        }
 
-
+        return xOffset - colStart;
     }
 
+    /**
+     * Calculates the a string representation of the boards contents from the permanent
+     * board data, and inserts the currently falling piece.
+     */
     private void redrawBoard() {
         representation = "";
 
@@ -143,15 +142,62 @@ public class Board {
         }
     }
 
+    /**
+     * The piece drops or locks, as appropriate.
+     */
     protected void tick() {
         if (CanBeDropped()) {
             DropALevel();
         } else {
             lockPieceInPlace();
+            checkForFullRows();
         }
         redrawBoard();
     }
 
+    /**
+     * Iterates over each row in the board, clears each full one and increases the
+     * score by one.
+     */
+    private void checkForFullRows() {
+        int scoreAdjustment = 0;
+        for (int row = 0; row < rows; row++) {
+            int nonEmpty = 0;
+            for (int col = 0; col < columns; col++) {
+                if(area[row][col].getChar() != Block.EMPTY)
+                    nonEmpty++;
+            }
+            if(nonEmpty == columns) {
+                scoreAdjustment++;
+                dropAllRowsAbove(row);
+            }
+        }
+        scoreKeeper.increaseScore(scoreAdjustment);
+    }
+
+
+    /**
+     * Clears the row and drops all above rows down one.
+     * @param rowToBeCleared
+     */
+    private void dropAllRowsAbove(int rowToBeCleared) {
+        for (int row = rowToBeCleared; row >= 0; row--) {
+            for (int col = 0; col < columns; col++) {
+                area[row][col] = row > 0
+                ? area[row-1][col]
+                : new Block();
+            }
+        }
+    }
+
+    /**
+     * Used by the redrawBoard method to determine when to insert the falling pieces
+     * data instead of the Boards data.
+     *
+     * @param x the x location on the board
+     * @param y the y location on the board
+     * @return whether the currently falling piece is at this location on the board.
+     */
     private boolean containsPiece(int x, int y) {
         if (falling.getDroppable() == null) {
             return false;
@@ -166,6 +212,10 @@ public class Board {
         }
     }
 
+
+    /**
+     * Adds the falling piece to the boards array and nullifies the currentlyFalling's data
+     */
     private void lockPieceInPlace() {
         Droppable d = falling.getDroppable();
         int x = falling.getX();
@@ -208,6 +258,17 @@ public class Board {
     }
 
 
+    /**
+     * This method is being too multipurposed at the moment.  It checks for the legality
+     * of a suggested placement of a piece.  It is being used by movements AND rotations, but
+     * rotations should probably have their own logic once the finalized rotation rules
+     * are implemented.  For now it does the job.
+     *
+     * @param d        piece to test
+     * @param rowShift tentative Y increment from where d is currently located
+     * @param colShift tentative X increment from where d is currently located
+     * @return whether the move is legal or not
+     */
     private boolean testAdjustment(Droppable d, int rowShift, int colShift) {
         int fallingWidth = d.getWidth();
         int fallingHeight = d.getHeight();
@@ -257,26 +318,10 @@ public class Board {
         }
     }
 
-    /**
-     * Although the individual rotation methods in Piece and Tetromino classes
-     * are fitting for the sub-suite-6 tests, the board rotate methods must modify the
-     * X and Y coordinates of the falling Droppable.
-     */
+
     public void rotateRight() {
         Droppable d = falling.getDroppable().rotateRight();
         loopThroughRotationAttempts(d);
-    }
-
-    private void loopThroughRotationAttempts(Droppable d) {
-        if (!attemptRotation(d, 0, 0)) {
-            if (!attemptRotation(d, 0, 1)) {
-               if(! attemptRotation(d, 0, -1)
-                   && d.equals(Tetromino.I_SHAPE)){
-                   System.out.println("calling rotate a third time");
-                   attemptRotation(d, 0, 2);
-               }
-            }
-        }
     }
 
     public void rotateLeft() {
@@ -284,6 +329,36 @@ public class Board {
         loopThroughRotationAttempts(d);
     }
 
+    /**
+     * Since there are multiple legal rotation outputs given different situations,
+     * this method loops through the three standard attempts, and one special case
+     * for horizontal I tetrominos
+     *
+     * @param d piece to iterate rotations over
+     */
+    private void loopThroughRotationAttempts(Droppable d) {
+        if (!attemptRotation(d, 0, 0)) {
+            if (!attemptRotation(d, 0, 1)) {
+                if (!attemptRotation(d, 0, -1)
+                        && d.equals(Tetromino.I_SHAPE)) {
+                    attemptRotation(d, 0, 2);
+                }
+            }
+        }
+    }
+
+
+    /**
+     * Although the individual rotation methods in Piece and Tetromino classes
+     * are fitting for the sub-suite-6 tests, the board rotate methods must modify the
+     * X and Y coordinates of the falling Droppable.
+     * NOTICE: if attempt is successful, the rotation is made, then true is returned.
+     *
+     * @param d      piece to rotate
+     * @param yShift tentative Y increment from where d is currently located
+     * @param xShift tentative X increment from where d is currently located
+     * @return whether the rotation is legal, if so the rotation is enacted
+     */
     private boolean attemptRotation(Droppable d, int yShift, int xShift) {
         int yOffset = yShift;
         int xOffset = xShift;
@@ -299,9 +374,16 @@ public class Board {
             redrawBoard();
             return true;
         } else {
-            System.out.println("not a valid rotation");
             return false;
         }
+    }
+
+    public void addScoreBoard(ScoreBoard s){
+        scoreKeeper = s;
+    }
+
+    public int getScore() {
+        return scoreKeeper.getScore();
     }
 }
 
