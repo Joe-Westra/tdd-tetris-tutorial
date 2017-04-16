@@ -32,9 +32,7 @@ public class Piece implements Droppable {
         this.cols = temp.length;
         p = new Block[cols][rows];
         for (int row = 0; row < cols; row++) {
-            for (int col = 0; col < rows; col++) {
-                p[row][col] = temp[row][col];
-            }
+            System.arraycopy(temp[row],0,p[row],0,temp[row].length);
         }
     }
 

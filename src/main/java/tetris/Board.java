@@ -21,7 +21,8 @@ public class Board {
     private Block[][] area;
     private String representation;
     private ScoreBoard scoreKeeper;
-
+    private boolean isFirstPlacement;
+    private ShuffleBag<Tetromino> shuffleBag;
 
     public Board(int rows, int columns) {
         this.rows = rows;
@@ -34,7 +35,17 @@ public class Board {
         }
         falling = new CurrentlyFalling();
         redrawBoard();
+        scoreKeeper = new ScoreBoard();
+        shuffleBag = new ShuffleBag<>();
+        loadTheBag();
+    }
 
+    private void loadTheBag() {
+        for (int i = 0; i < 2; i++) {
+            shuffleBag.add(Tetromino.I_SHAPE);
+            shuffleBag.add(Tetromino.O_SHAPE);
+            shuffleBag.add(Tetromino.T_SHAPE);
+        }
     }
 
     @Override
@@ -58,6 +69,7 @@ public class Board {
             falling.setX(findMiddle(falling.getDroppable()));
             falling.setY(getStartingHeight());
             tick();
+            isFirstPlacement = true;
         } else {
             throw new IllegalStateException("already falling");
         }
@@ -148,6 +160,9 @@ public class Board {
     protected void tick() {
         if (CanBeDropped()) {
             DropALevel();
+            isFirstPlacement = false;
+        } else if (isFirstPlacement) {
+            throw new IllegalStateException("Game Over");
         } else {
             lockPieceInPlace();
             checkForFullRows();
@@ -164,10 +179,11 @@ public class Board {
         for (int row = 0; row < rows; row++) {
             int nonEmpty = 0;
             for (int col = 0; col < columns; col++) {
-                if(area[row][col].getChar() != Block.EMPTY)
+                if (area[row][col].getChar() != Block.EMPTY) {
                     nonEmpty++;
+                }
             }
-            if(nonEmpty == columns) {
+            if (nonEmpty == columns) {
                 scoreAdjustment++;
                 dropAllRowsAbove(row);
             }
@@ -178,14 +194,15 @@ public class Board {
 
     /**
      * Clears the row and drops all above rows down one.
+     *
      * @param rowToBeCleared
      */
     private void dropAllRowsAbove(int rowToBeCleared) {
         for (int row = rowToBeCleared; row >= 0; row--) {
             for (int col = 0; col < columns; col++) {
                 area[row][col] = row > 0
-                ? area[row-1][col]
-                : new Block();
+                        ? area[row - 1][col]
+                        : new Block();
             }
         }
     }
@@ -242,19 +259,19 @@ public class Board {
     }
 
     private boolean CanBeDropped() {
-        return testAdjustment(1, 0);
+        return adjustmentIsLegal(1, 0);
     }
 
 
     protected void moveLeft() {
-        if (testAdjustment(0, -1)) {
+        if (adjustmentIsLegal(0, -1)) {
             falling.setX(falling.getX() - 1);
             redrawBoard();
         }
     }
 
-    private boolean testAdjustment(int rowShift, int colShift) {
-        return testAdjustment(falling.getDroppable(), rowShift, colShift);
+    private boolean adjustmentIsLegal(int rowShift, int colShift) {
+        return adjustmentIsLegal(falling.getDroppable(), rowShift, colShift);
     }
 
 
@@ -269,7 +286,7 @@ public class Board {
      * @param colShift tentative X increment from where d is currently located
      * @return whether the move is legal or not
      */
-    private boolean testAdjustment(Droppable d, int rowShift, int colShift) {
+    private boolean adjustmentIsLegal(Droppable d, int rowShift, int colShift) {
         int fallingWidth = d.getWidth();
         int fallingHeight = d.getHeight();
         int fallingY = falling.getY();
@@ -303,14 +320,14 @@ public class Board {
 
 
     public void moveRight() {
-        if (testAdjustment(0, 1)) {
+        if (adjustmentIsLegal(0, 1)) {
             falling.setX(falling.getX() + 1);
             redrawBoard();
         }
     }
 
     public void moveDown() {
-        if (testAdjustment(1, 0)) {
+        if (adjustmentIsLegal(1, 0)) {
             falling.setY(falling.getY() + 1);
             redrawBoard();
         } else {
@@ -367,7 +384,7 @@ public class Board {
         } else if (d.toString().equals(Tetromino.I_SHAPE_VERT.toString())) {
             yOffset = 1;
         }
-        if (testAdjustment(d, yOffset, xOffset)) {
+        if (adjustmentIsLegal(d, yOffset, xOffset)) {
             falling.setDroppable(d);
             falling.setX(falling.getX() + xOffset);
             falling.setY(falling.getY() + yOffset);
@@ -378,12 +395,22 @@ public class Board {
         }
     }
 
-    public void addScoreBoard(ScoreBoard s){
+    public void addScoreBoard(ScoreBoard s) {
         scoreKeeper = s;
     }
 
     public int getScore() {
         return scoreKeeper.getScore();
+    }
+
+    public void dropToBottom() {
+        while (falling.isFalling()) {
+            tick();
+        }
+    }
+
+    public Tetromino chooseRandomTetromino() {
+        return shuffleBag.getNext();
     }
 }
 
