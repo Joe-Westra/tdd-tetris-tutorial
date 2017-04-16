@@ -15,7 +15,6 @@ public class Step7_KeepingScoreTest extends Assert {
     public final Board board = new Board(6, 8);
 
 
-
     /**
      * After re-reading the rules of TDD it's evident that I have broken
      * pretty much all of them.  At this point it in the introduction
@@ -31,12 +30,7 @@ public class Step7_KeepingScoreTest extends Assert {
             board.drop(Tetromino.I_SHAPE);
             board.moveLeft();
             board.moveLeft();
-            board.tick();
-            board.tick();
-            board.tick();
-            board.tick();
-            board.tick();
-            board.tick();
+            board.dropToBottom();
             board.drop(Tetromino.I_SHAPE);
             board.tick();
             board.tick();
@@ -76,24 +70,15 @@ public class Step7_KeepingScoreTest extends Assert {
         public void multiple_rows_are_cleared() {
             board.moveLeft();
             board.moveLeft();
-            board.tick();
-            board.tick();
+            board.dropToBottom();
             board.drop(Tetromino.O_SHAPE);
             board.moveRight();
-            board.tick();
-            board.tick();
-            board.tick();
-            board.tick();
-            board.tick();
+            board.dropToBottom();
             board.drop(Tetromino.O_SHAPE);
             board.moveRight();
             board.moveRight();
             board.moveRight();
-            board.tick();
-            board.tick();
-            board.tick();
-            board.tick();
-            board.tick();
+            board.dropToBottom();
             assertEquals("" +
                     "........\n" +
                     "........\n" +
@@ -117,32 +102,18 @@ public class Step7_KeepingScoreTest extends Assert {
             board.moveLeft();
             board.moveLeft();
             board.moveLeft();
-            board.tick();
-            board.tick();
-            board.tick();
-            board.tick();
-            board.tick();
+            board.dropToBottom();
             board.drop(Tetromino.O_SHAPE);
             board.moveLeft();
-            board.tick();
-            board.tick();
-            board.tick();
-            board.tick();
-            board.tick();
+            board.dropToBottom();
             board.drop(Tetromino.O_SHAPE);
             board.moveRight();
-            board.tick();
-            board.tick();
-            board.tick();
-            board.tick();
-            board.tick();
+            board.dropToBottom();
             board.drop(Tetromino.T_SHAPE);
             board.moveLeft();
             board.moveLeft();
             board.moveLeft();
-            board.tick();
-            board.tick();
-            board.tick();
+            board.dropToBottom();
             board.drop(Tetromino.O_SHAPE);
             board.moveRight();
             board.moveRight();
@@ -168,4 +139,21 @@ public class Step7_KeepingScoreTest extends Assert {
     }
 
 
+    public class the_game_can_be_lost {
+
+        @Before
+        public void setup_board() {
+            board.drop(Tetromino.O_SHAPE);
+            board.dropToBottom();
+            board.drop(Tetromino.O_SHAPE);
+            board.dropToBottom();
+            board.drop(Tetromino.O_SHAPE);
+        }
+
+        @Test
+        public void if_there_is_no_room_to_drop() {
+            MyAsserts.assertThrows(IllegalStateException.class, "Game Over",
+                    () -> board.tick());
+        }
+    }
 }

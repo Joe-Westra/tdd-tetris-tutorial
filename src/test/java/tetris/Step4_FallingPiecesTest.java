@@ -129,4 +129,27 @@ public class Step4_FallingPiecesTest extends Assert {
             assertFalse(board.hasFalling());
         }
     }
+
+    public class piece_selection_for_dropping {
+        @Test
+        public void prohibits_dropping_the_same_piece_3X_in_a_row() {
+            final int doubleTetSize = 6;
+            for (int iteration = 0; iteration < 10; iteration++) {
+
+
+                Tetromino[] temp = new Tetromino[doubleTetSize];
+                for (int i = 0; i < doubleTetSize; i++) {
+                    temp[i] = board.chooseRandomTetromino();
+                }
+                boolean repetitious = true;
+                for (int i = 2; i < doubleTetSize; i++) {
+                    repetitious = temp[i - 2].equals(temp[i - 1]) &&
+                            temp[i - 1].equals(temp[i]) &&
+                            temp[i - 2].equals(temp[i]);
+
+                }
+                assertFalse(repetitious);
+            }
+        }
+    }
 }

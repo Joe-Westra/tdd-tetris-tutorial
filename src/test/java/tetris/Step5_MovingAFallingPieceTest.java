@@ -16,18 +16,18 @@ public class Step5_MovingAFallingPieceTest extends Assert {
     // - The test names have been provided, you just need to fill in the test body
     // - Next step: RotatingAFallingPieceTest
 
-    private final Board board = new Board(6,8);
+    private final Board board = new Board(6, 8);
 
-    public class falling_pieces{
+    public class falling_pieces {
 
         @Before
-        public void drop_a_piece(){
+        public void drop_a_piece() {
             board.drop(Tetromino.I_SHAPE);
         }
 
         @Test
-        public void enter_board_at_the_top_row(){
-            assertEquals(""+
+        public void enter_board_at_the_top_row() {
+            assertEquals("" +
                     "..IIII..\n" +
                     "........\n" +
                     "........\n" +
@@ -35,19 +35,31 @@ public class Step5_MovingAFallingPieceTest extends Assert {
                     "........\n" +
                     "........\n", board.toString());
         }
+
+        @Test
+        public void can_be_dropped_to_the_last_row() {
+            board.dropToBottom();
+            assertEquals("" +
+                    "........\n" +
+                    "........\n" +
+                    "........\n" +
+                    "........\n" +
+                    "........\n" +
+                    "..IIII..\n", board.toString());
+        }
     }
 
-    public class pieces_are_mobile{
+    public class pieces_are_mobile {
 
         @Before
-        public void drop_an_i(){
+        public void drop_an_i() {
             board.drop(Tetromino.I_SHAPE);
         }
 
         @Test
-        public void can_be_moved_left(){
+        public void can_be_moved_left() {
             board.moveLeft();
-            assertEquals(""+
+            assertEquals("" +
                     ".IIII...\n" +
                     "........\n" +
                     "........\n" +
@@ -57,9 +69,9 @@ public class Step5_MovingAFallingPieceTest extends Assert {
         }
 
         @Test
-        public void can_be_moved_right(){
+        public void can_be_moved_right() {
             board.moveRight();
-            assertEquals(""+
+            assertEquals("" +
                     "...IIII.\n" +
                     "........\n" +
                     "........\n" +
@@ -69,9 +81,9 @@ public class Step5_MovingAFallingPieceTest extends Assert {
         }
 
         @Test
-        public void can_be_moved_down(){
+        public void can_be_moved_down() {
             board.moveDown();
-            assertEquals(""+
+            assertEquals("" +
                     "........\n" +
                     "..IIII..\n" +
                     "........\n" +
@@ -81,15 +93,15 @@ public class Step5_MovingAFallingPieceTest extends Assert {
         }
     }
 
-    public class board_boundaries_are_respected{
+    public class board_boundaries_are_respected {
 
         @Before
-        public void drop_a_t(){
+        public void drop_a_t() {
             board.drop(Tetromino.T_SHAPE);
         }
 
         @Test
-        public void stops_at_left_edge(){
+        public void stops_at_left_edge() {
             board.moveLeft();
             board.moveLeft();
             board.moveLeft();
@@ -111,7 +123,7 @@ public class Step5_MovingAFallingPieceTest extends Assert {
         }
 
         @Test
-        public void stops_at_right_edge(){
+        public void stops_at_right_edge() {
             board.moveRight();
             board.moveRight();
             assertEquals("" +
@@ -132,36 +144,36 @@ public class Step5_MovingAFallingPieceTest extends Assert {
         }
 
         @Test
-        public void stops_at_bottom(){
+        public void stops_at_bottom() {
             board.moveDown();
             board.moveDown();
             board.moveDown();
             board.moveDown();
             assertEquals("" +
-            "........\n" +
-            "........\n" +
-            "........\n" +
-            "........\n" +
-            "....T...\n" +
-            "...TTT..\n", board.toString());
+                    "........\n" +
+                    "........\n" +
+                    "........\n" +
+                    "........\n" +
+                    "....T...\n" +
+                    "...TTT..\n", board.toString());
             assertTrue(board.hasFalling());
 
             board.moveDown();
             assertEquals("" +
-            "........\n" +
-            "........\n" +
-            "........\n" +
-            "........\n" +
-            "....T...\n" +
-            "...TTT..\n", board.toString());
+                    "........\n" +
+                    "........\n" +
+                    "........\n" +
+                    "........\n" +
+                    "....T...\n" +
+                    "...TTT..\n", board.toString());
             assertFalse(board.hasFalling());
         }
     }
 
-    public class collision_detection{
+    public class collision_detection {
 
         @Before
-        public void setup_the_board(){
+        public void setup_the_board() {
             board.drop(Tetromino.I_SHAPE_VERT);
             board.moveRight();
             board.moveRight();
@@ -180,66 +192,66 @@ public class Step5_MovingAFallingPieceTest extends Assert {
         }
 
         @Test
-        public void board_looks_like_a_hockey_net(){
-            assertEquals(""+
-            "........\n" +
-            "........\n" +
-            "I......I\n" +
-            "I......I\n" +
-            "I......I\n" +
-            "I......I\n",board.toString());
+        public void board_looks_like_a_hockey_net() {
+            assertEquals("" +
+                    "........\n" +
+                    "........\n" +
+                    "I......I\n" +
+                    "I......I\n" +
+                    "I......I\n" +
+                    "I......I\n", board.toString());
         }
 
         @Test
-        public void detects_pieces_to_right(){
+        public void detects_pieces_to_right() {
             board.drop(Tetromino.T_SHAPE);
             board.tick();
             board.tick();
             board.moveRight();
             board.moveRight();
-            assertEquals(""+
+            assertEquals("" +
                     "........\n" +
                     "........\n" +
                     "I....T.I\n" +
                     "I...TTTI\n" +
                     "I......I\n" +
-                    "I......I\n",board.toString());
+                    "I......I\n", board.toString());
 
         }
 
         @Test
-        public void detects_pieces_to_left(){
+        public void detects_pieces_to_left() {
             board.drop(Tetromino.T_SHAPE);
             board.tick();
             board.tick();
             board.moveLeft();
             board.moveLeft();
             board.moveLeft();
-            assertEquals(""+
+            assertEquals("" +
                     "........\n" +
                     "........\n" +
                     "I.T....I\n" +
                     "ITTT...I\n" +
                     "I......I\n" +
-                    "I......I\n",board.toString());
+                    "I......I\n", board.toString());
 
         }
 
 
         @Test
-        public void detects_pieces_below(){
+        public void detects_pieces_below() {
             board.drop(Tetromino.T_SHAPE);
             board.moveLeft();
             board.moveLeft();
             board.moveLeft();
             board.tick();
-            assertEquals(""+
+            assertEquals("" +
                     ".T......\n" +
                     "TTT.....\n" +
                     "I......I\n" +
                     "I......I\n" +
                     "I......I\n" +
-                    "I......I\n",board.toString());
+                    "I......I\n", board.toString());
             assertFalse(board.hasFalling());
 
         }
