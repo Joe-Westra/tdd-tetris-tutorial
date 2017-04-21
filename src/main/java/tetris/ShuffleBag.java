@@ -12,9 +12,9 @@ import java.util.*;
  */
 public class ShuffleBag<T> {
 
-    ArrayList<T> bagContents;
-    int current;
-    Random random;
+    private ArrayList<T> bagContents;
+    private int current;
+    private Random random;
 
     ShuffleBag() {
         bagContents = new ArrayList<>();

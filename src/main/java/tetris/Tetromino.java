@@ -34,6 +34,18 @@ public class Tetromino implements Droppable{
                                 "..I..\n" +
                                 ".....\n");
 
+    public static final Tetromino J_SHAPE =
+            new Tetromino(   "" +
+                    "..J\n" +
+                    "..J\n" +
+                    ".JJ\n");
+
+    public static final Tetromino L_SHAPE =
+            new Tetromino(   "" +
+                    "L..\n" +
+                    "L..\n" +
+                    "LL.\n");
+
     Tetromino(String s) {
         shape = new Piece(s);
     }
