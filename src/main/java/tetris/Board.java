@@ -45,6 +45,10 @@ public class Board {
             shuffleBag.add(Tetromino.I_SHAPE);
             shuffleBag.add(Tetromino.O_SHAPE);
             shuffleBag.add(Tetromino.T_SHAPE);
+            shuffleBag.add(Tetromino.J_SHAPE);
+            shuffleBag.add(Tetromino.L_SHAPE);
+            shuffleBag.add(Tetromino.Z_SHAPE);
+            shuffleBag.add(Tetromino.S_SHAPE);
         }
     }
 
@@ -412,6 +416,14 @@ public class Board {
     public Tetromino chooseRandomTetromino() {
         return shuffleBag.getNext();
     }
+
+    public void doTurn() {
+        if (falling.isFalling())
+            tick();
+        else
+            this.drop(chooseRandomTetromino());
+    }
+
 }
 
 
