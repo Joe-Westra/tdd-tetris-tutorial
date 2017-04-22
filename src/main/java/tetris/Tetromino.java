@@ -46,6 +46,30 @@ public class Tetromino implements Droppable{
                     "L..\n" +
                     "LL.\n");
 
+    public static final Tetromino Z_SHAPE =
+            new Tetromino(   "" +
+                    "...\n" +
+                    "ZZ.\n" +
+                    ".ZZ\n");
+
+    public static final Tetromino Z_SHAPE_VERT =
+            new Tetromino(   "" +
+                    "..Z\n" +
+                    ".ZZ\n" +
+                    ".Z.\n");
+
+    public static final Tetromino S_SHAPE =
+            new Tetromino(   "" +
+                    "...\n" +
+                    ".SS\n" +
+                    "SS.\n");
+
+    public static final Tetromino S_SHAPE_VERT =
+            new Tetromino(   "" +
+                    "S..\n" +
+                    "SS.\n" +
+                    ".S.\n");
+
     Tetromino(String s) {
         shape = new Piece(s);
     }
@@ -57,6 +81,14 @@ public class Tetromino implements Droppable{
             return I_SHAPE_VERT;
         else if(this == I_SHAPE_VERT)
             return I_SHAPE;
+        else if(this == Z_SHAPE_VERT)
+            return Z_SHAPE;
+        else if(this == Z_SHAPE)
+            return Z_SHAPE_VERT;
+        else if(this == S_SHAPE_VERT)
+            return S_SHAPE;
+        else if(this == S_SHAPE)
+            return S_SHAPE_VERT;
         else
             return new Tetromino(shape.rotateRight().toString());
     }
