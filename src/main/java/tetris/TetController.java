@@ -13,7 +13,10 @@ public class TetController {
     private Board model;
     private Timer clock;
     private ScoreBoard scoreKeeper;
-
+    public static final int BASE_SPEED = 300;
+    public static final float SPEED_MULTIPLIER = 0.8f;
+    public static final int THRESHOLD = 200;
+    private int level = 0;
 
     public static void main(String args[]) {
         TetController game = new TetController();
@@ -26,7 +29,7 @@ public class TetController {
         view.addTetListener(new TetListener());
         model.addScoreBoard(scoreKeeper = new ScoreBoard());
         view.addScoreBoard(scoreKeeper);
-        clock = new Timer(300, e -> doTurn());
+        clock = new Timer(BASE_SPEED, e -> doTurn());
 
         startGame();
     }
@@ -37,6 +40,9 @@ public class TetController {
         clock.start();
     }
 
+    private void setSpeed(){
+        clock.setDelay((int)(BASE_SPEED * Math.pow(SPEED_MULTIPLIER, level)));
+    }
     private void drawBoard() {
         view.setBlocks(model.toString());
     }
@@ -45,9 +51,16 @@ public class TetController {
         try {
             model.doTurn();
         } catch (IllegalStateException e){
-
+            System.out.println("It's all over, buddy!");
+            clock.stop();
+            clock = null;
         }
         drawBoard();
+        if(scoreKeeper.getScore() >= THRESHOLD * Math.pow(1.5,level)){
+            level++;
+            setSpeed();
+        }
+
     }
 
     class TetListener implements KeyListener {
@@ -57,18 +70,23 @@ public class TetController {
             char key = e.getKeyChar();
             switch (key) {
                 case 'a':
+                    if(clock.isRunning())
                     model.moveLeft();
                     break;
                 case 'd':
-                    model.moveRight();
+                    if(clock.isRunning())
+                        model.moveRight();
                     break;
                 case 'w':
+                    if(clock.isRunning())
                     model.rotateRight();
                     break;
                 case 's':
+                    if(clock.isRunning())
                     model.rotateLeft();
                     break;
                 case ' ':
+                    if(clock.isRunning())
                     model.dropToBottom();
                     break;
                 case 'p':

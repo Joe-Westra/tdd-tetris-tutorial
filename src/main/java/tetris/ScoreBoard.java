@@ -11,6 +11,7 @@ import java.awt.*;
 public class ScoreBoard extends JLabel{
     private int score;
 
+
     ScoreBoard(){
         this.setBackground(Color.BLACK);
         this.setBorder(BorderFactory.createLineBorder(Color.GRAY,5,true));

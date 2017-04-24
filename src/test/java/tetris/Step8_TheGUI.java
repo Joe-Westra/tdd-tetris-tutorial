@@ -6,16 +6,17 @@ import org.junit.Ignore;
  * Created by jdub on 14/04/17.
  *
  * TODO:
- * The game works up next:
+ * The game works. Up next:
  -Implementing the missing tests
- -Increase scoring
- -Implement speed changes
+ -DONE: Increase scoring(bonus points for dropping to bottom)
+ -DONE: Implement speed changes
  -Add Highscore list
- 
+
  -Fix known bugs:
- (some game overs are so severe they don't throw an IllegalStateException)
- (moveRight() and moveLeft() are a bit buggy)
- (pausing doesn't lock keyboard commands)
+FIXED (some game overs are so severe they don't throw an IllegalStateException)
+FIXED (moveRight() and moveLeft() are a bit buggy)
+FIXED (pausing doesn't lock keyboard commands)
+Keypad events still fire when the game is over
  */
 @Ignore
 public class Step8_TheGUI {

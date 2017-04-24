@@ -14,7 +14,8 @@ Current to do:
 package tetris;
 
 public class Board {
-
+    private static final int DROP_BONUS = 1;
+    private static final int ROW_SCORE = 20;
     private final int rows;
     private final int columns;
     private CurrentlyFalling falling;
@@ -61,7 +62,6 @@ public class Board {
         return falling.isFalling();
     }
 
-
     /**
      * Drops a new piece from the middle top of the board.
      *
@@ -72,8 +72,8 @@ public class Board {
             falling.setDroppable(piece);
             falling.setX(findMiddle(falling.getDroppable()));
             falling.setY(getStartingHeight());
-            tick();
             isFirstPlacement = true;
+            tick();
         } else {
             throw new IllegalStateException("already falling");
         }
@@ -192,7 +192,7 @@ public class Board {
                 dropAllRowsAbove(row);
             }
         }
-        scoreKeeper.increaseScore(scoreAdjustment);
+        scoreKeeper.increaseScore(ROW_SCORE * scoreAdjustment);
     }
 
 
@@ -268,7 +268,7 @@ public class Board {
 
 
     protected void moveLeft() {
-        if (adjustmentIsLegal(0, -1)) {
+        if (hasFalling() && adjustmentIsLegal(0, -1)) {
             falling.setX(falling.getX() - 1);
             redrawBoard();
         }
@@ -296,7 +296,6 @@ public class Board {
         int fallingY = falling.getY();
         int fallingX = falling.getX();
 
-        System.out.println(representation);
         if (fallingY + rowShift > rows) { //guards against NPE when trying to access the board array
             return false;
         }
@@ -324,7 +323,7 @@ public class Board {
 
 
     public void moveRight() {
-        if (adjustmentIsLegal(0, 1)) {
+        if (hasFalling() && adjustmentIsLegal(0, 1)) {
             falling.setX(falling.getX() + 1);
             redrawBoard();
         }
@@ -341,13 +340,17 @@ public class Board {
 
 
     public void rotateRight() {
-        Droppable d = falling.getDroppable().rotateRight();
-        loopThroughRotationAttempts(d);
+        if (hasFalling()) {
+            Droppable d = falling.getDroppable().rotateRight();
+            loopThroughRotationAttempts(d);
+        }
     }
 
     public void rotateLeft() {
-        Droppable d = falling.getDroppable().rotateLeft();
-        loopThroughRotationAttempts(d);
+        if (hasFalling()) {
+            Droppable d = falling.getDroppable().rotateLeft();
+            loopThroughRotationAttempts(d);
+        }
     }
 
     /**
@@ -409,6 +412,7 @@ public class Board {
 
     public void dropToBottom() {
         while (falling.isFalling()) {
+            scoreKeeper.increaseScore(DROP_BONUS);
             tick();
         }
     }
@@ -417,11 +421,16 @@ public class Board {
         return shuffleBag.getNext();
     }
 
-    public void doTurn() {
-        if (falling.isFalling())
+    public void doTurn() throws IllegalStateException{
+        if (falling.isFalling()) {
             tick();
-        else
-            this.drop(chooseRandomTetromino());
+        } else {
+            try{
+                this.drop(chooseRandomTetromino());
+            } catch (IllegalStateException e){
+                System.out.println(e.getMessage());
+            }
+        }
     }
 
 }
