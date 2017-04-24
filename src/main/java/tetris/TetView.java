@@ -84,6 +84,12 @@ class BoardCell extends JLabel {
             case 'O':
                 color = Color.WHITE;
                 break;
+            case 'S':
+                color = Color.GREEN;
+                break;
+            case 'Z':
+                color = Color.PINK;
+                break;
             default:
                 color = Color.MAGENTA;
         }
