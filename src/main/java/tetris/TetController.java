@@ -17,6 +17,8 @@ public class TetController {
     public static final float SPEED_MULTIPLIER = 0.8f;
     public static final int THRESHOLD = 200;
     private int level = 0;
+    enum GameState {PAUSED,RUNNING,OVER};
+    private GameState gameState;
 
     public static void main(String args[]) {
         TetController game = new TetController();
@@ -38,6 +40,7 @@ public class TetController {
         drawBoard();
         view.setVisible(true);
         clock.start();
+        gameState = GameState.RUNNING;
     }
 
     private void setSpeed(){
@@ -48,12 +51,16 @@ public class TetController {
     }
 
     private void doTurn() {
+
         try {
             model.doTurn();
         } catch (IllegalStateException e){
             System.out.println("It's all over, buddy!");
             clock.stop();
-            clock = null;
+            gameState = GameState.OVER;
+            scoreKeeper.setText("GAME OVER!  Final Score: " + scoreKeeper.getScore()
+                                + ", on level " + level);
+            //clock = null;
         }
         drawBoard();
         if(scoreKeeper.getScore() >= THRESHOLD * Math.pow(1.5,level)){
@@ -70,29 +77,31 @@ public class TetController {
             char key = e.getKeyChar();
             switch (key) {
                 case 'a':
-                    if(clock.isRunning())
+                    if(gameState == GameState.RUNNING)
                     model.moveLeft();
                     break;
                 case 'd':
-                    if(clock.isRunning())
+                    if(gameState == GameState.RUNNING)
                         model.moveRight();
                     break;
                 case 'w':
-                    if(clock.isRunning())
+                    if(gameState == GameState.RUNNING)
                     model.rotateRight();
                     break;
                 case 's':
-                    if(clock.isRunning())
+                    if(gameState == GameState.RUNNING)
                     model.rotateLeft();
                     break;
                 case ' ':
-                    if(clock.isRunning())
+                    if(gameState == GameState.RUNNING)
                     model.dropToBottom();
                     break;
                 case 'p':
-                    if (clock.isRunning()) {
+                    if (gameState == GameState.RUNNING) {
+                        gameState = GameState.PAUSED;
                         clock.stop();
                     } else {
+                        gameState = GameState.RUNNING;
                         clock.start();
                     }
             }

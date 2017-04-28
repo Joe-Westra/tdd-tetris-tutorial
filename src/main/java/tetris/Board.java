@@ -67,7 +67,7 @@ public class Board {
      *
      * @param piece
      */
-    protected void drop(Droppable piece) {
+    protected void drop(Droppable piece) throws IllegalStateException{
         if (!falling.isFalling()) {
             falling.setDroppable(piece);
             falling.setX(findMiddle(falling.getDroppable()));
