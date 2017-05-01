@@ -5,20 +5,37 @@ import java.awt.event.*;
 
 /**
  * Created by jdub on 22/04/17.
- *
  */
 public class TetController {
 
-    private TetView view;
-    private Board model;
-    private Timer clock;
-    private ScoreBoard scoreKeeper;
-    public static final int BASE_SPEED = 300;
+    public static final int BASE_SPEED = 400;
     public static final float SPEED_MULTIPLIER = 0.8f;
     public static final int THRESHOLD = 200;
+    public static final double RATE_OF_CHANGE = 1.5;
+
+    enum GameState {PAUSED, RUNNING, OVER}
+
+    private TetView view;
+    private Board model;
+
+    public Board getModel() {
+        return model;
+    }
+
+    public Timer getClock() {
+        return clock;
+    }
+
+    private Timer clock;
+
+    public ScoreBoard getScoreKeeper() {
+        return scoreKeeper;
+    }
+
+    private ScoreBoard scoreKeeper;
     private int level = 0;
-    enum GameState {PAUSED,RUNNING,OVER};
     private GameState gameState;
+
 
     public static void main(String args[]) {
         TetController game = new TetController();
@@ -37,15 +54,17 @@ public class TetController {
     }
 
     private void startGame() {
+        clock.start();
         drawBoard();
         view.setVisible(true);
-        clock.start();
         gameState = GameState.RUNNING;
+
     }
 
-    private void setSpeed(){
-        clock.setDelay((int)(BASE_SPEED * Math.pow(SPEED_MULTIPLIER, level)));
+    private void setSpeed(int level) {
+        clock.setDelay((int) (BASE_SPEED * Math.pow(SPEED_MULTIPLIER, level)));
     }
+
     private void drawBoard() {
         view.setBlocks(model.toString());
     }
@@ -54,20 +73,24 @@ public class TetController {
 
         try {
             model.doTurn();
-        } catch (IllegalStateException e){
+        } catch (IllegalStateException e) {
             System.out.println("It's all over, buddy!");
             clock.stop();
             gameState = GameState.OVER;
             scoreKeeper.setText("GAME OVER!  Final Score: " + scoreKeeper.getScore()
-                                + ", on level " + level);
-            //clock = null;
-        }
-        drawBoard();
-        if(scoreKeeper.getScore() >= THRESHOLD * Math.pow(1.5,level)){
-            level++;
-            setSpeed();
+                    + ", on level " + (level + 1));
         }
 
+        drawBoard();
+
+        if (scoreKeeper.getScore() >= THRESHOLD * Math.pow(RATE_OF_CHANGE, level)) {
+            setSpeed(++level);
+        }
+
+    }
+
+    public int getLevel() {
+        return level;
     }
 
     class TetListener implements KeyListener {
@@ -75,43 +98,48 @@ public class TetController {
         @Override
         public void keyTyped(KeyEvent e) {
             char key = e.getKeyChar();
-            switch (key) {
-                case 'a':
-                    if(gameState == GameState.RUNNING)
-                    model.moveLeft();
-                    break;
-                case 'd':
-                    if(gameState == GameState.RUNNING)
+            if (gameState == GameState.RUNNING) {
+                switch (key) {
+                    case 'a':
+                        model.moveLeft();
+                        break;
+                    case 'd':
                         model.moveRight();
-                    break;
-                case 'w':
-                    if(gameState == GameState.RUNNING)
-                    model.rotateRight();
-                    break;
-                case 's':
-                    if(gameState == GameState.RUNNING)
-                    model.rotateLeft();
-                    break;
-                case ' ':
-                    if(gameState == GameState.RUNNING)
-                    model.dropToBottom();
-                    break;
-                case 'p':
-                    if (gameState == GameState.RUNNING) {
-                        gameState = GameState.PAUSED;
-                        clock.stop();
-                    } else {
-                        gameState = GameState.RUNNING;
-                        clock.start();
-                    }
+                        break;
+                    case 'w':
+                        model.rotateRight();
+                        break;
+                    case 's':
+                        model.rotateLeft();
+                        break;
+                    case ' ':
+                        model.dropToBottom();
+                        break;
+                }
+            }
+            if (key == 'p') {
+                togglePause();
             }
             drawBoard();
         }
 
-        @Override
-        public void keyPressed(KeyEvent e) {}
+        private void togglePause() {
+            if (gameState == GameState.RUNNING) {
+                gameState = GameState.PAUSED;
+                clock.stop();
+            } else if (gameState == GameState.PAUSED) {
+                gameState = GameState.RUNNING;
+                clock.start();
+            }
+        }
+
 
         @Override
-        public void keyReleased(KeyEvent e) {}
+        public void keyPressed(KeyEvent e) {
+        }
+
+        @Override
+        public void keyReleased(KeyEvent e) {
+        }
     }
 }

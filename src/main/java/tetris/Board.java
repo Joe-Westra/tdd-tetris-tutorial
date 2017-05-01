@@ -2,20 +2,11 @@
 // You may use and modify this source code freely for personal non-commercial use.
 // This source code may NOT be used as course material without prior written agreement.
 
-
-
-/*
-
-Current to do:
-
--revamp the hasFalling() method to check if there is an active tet rather than block
-
- */
 package tetris;
 
 public class Board {
-    private static final int DROP_BONUS = 1;
-    private static final int ROW_SCORE = 20;
+    public static final int DROP_BONUS = 1;
+    public static final int ROW_SCORE = 20;
     private final int rows;
     private final int columns;
     private CurrentlyFalling falling;
@@ -169,7 +160,7 @@ public class Board {
             throw new IllegalStateException("Game Over");
         } else {
             lockPieceInPlace();
-            checkForFullRows();
+            removeAndScoreFullRows();
         }
         redrawBoard();
     }
@@ -178,7 +169,7 @@ public class Board {
      * Iterates over each row in the board, clears each full one and increases the
      * score by one.
      */
-    private void checkForFullRows() {
+    private void removeAndScoreFullRows() {
         int scoreAdjustment = 0;
         for (int row = 0; row < rows; row++) {
             int nonEmpty = 0;

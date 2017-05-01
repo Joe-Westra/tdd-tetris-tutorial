@@ -30,7 +30,12 @@ public class Step7_KeepingScoreTest extends Assert {
             board.drop(Tetromino.I_SHAPE);
             board.moveLeft();
             board.moveLeft();
-            board.dropToBottom();
+            board.tick();
+            board.tick();
+            board.tick();
+            board.tick();
+            board.tick();
+            board.tick();
             board.drop(Tetromino.I_SHAPE);
             board.tick();
             board.tick();
@@ -63,7 +68,7 @@ public class Step7_KeepingScoreTest extends Assert {
                     "........\n" +
                     "........\n" +
                     "........\n", board.toString());
-            assertTrue(board.getScore() == 1);
+            assertEquals(board.ROW_SCORE, board.getScore());
         }
 
         @Test
@@ -86,7 +91,7 @@ public class Step7_KeepingScoreTest extends Assert {
                     "........\n" +
                     "........\n" +
                     "........\n", board.toString());
-            assertTrue(board.getScore() == 2);
+            assertEquals((board.ROW_SCORE * 2) + (board.DROP_BONUS * 12), board.getScore());
 
         }
 
@@ -134,7 +139,7 @@ public class Step7_KeepingScoreTest extends Assert {
                     "........\n" +
                     ".T......\n" +
                     "TTT.....\n", board.toString());
-            assertTrue(board.getScore() == 2);
+            assertEquals((board.ROW_SCORE * 2) + (board.DROP_BONUS * 18), board.getScore());
         }
     }
 
@@ -148,12 +153,13 @@ public class Step7_KeepingScoreTest extends Assert {
             board.drop(Tetromino.O_SHAPE);
             board.dropToBottom();
             board.drop(Tetromino.O_SHAPE);
+            board.tick();
         }
 
         @Test
         public void if_there_is_no_room_to_drop() {
             MyAsserts.assertThrows(IllegalStateException.class, "Game Over",
-                    () -> board.tick());
+                    () -> board.drop(Tetromino.O_SHAPE));
         }
     }
 }
