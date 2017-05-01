@@ -314,4 +314,74 @@ public class Step3_RotatingTetrominoesTest extends Assert {
                     "LL.\n", shape.toString());
         }
     }
+
+    public class The_S_shape {
+        @Before
+        public void set_as_S() {
+            shape = Tetromino.S_SHAPE;
+        }
+
+        @Test
+        public void is_shaped_like_an_S() {
+            assertEquals("" +
+                    "...\n" +
+                    ".SS\n" +
+                    "SS.\n", shape.toString());
+        }
+
+        @Test
+        public void can_rotate_left() {
+            shape = shape.rotateLeft();
+            assertEquals(shape, Tetromino.S_SHAPE_VERT);
+            shape = shape.rotateLeft();
+            assertEquals(shape, Tetromino.S_SHAPE);
+            shape = shape.rotateLeft();
+            assertEquals(shape, Tetromino.S_SHAPE_VERT);
+        }
+
+        @Test
+        public void can_rotate_right() {
+            shape = shape.rotateRight();
+            assertEquals(shape, Tetromino.S_SHAPE_VERT);
+            shape = shape.rotateRight();
+            assertEquals(shape, Tetromino.S_SHAPE);
+            shape = shape.rotateRight();
+            assertEquals(shape, Tetromino.S_SHAPE_VERT);
+        }
+    }
+
+    public class The_Z_shape {
+        @Before
+        public void set_as_Z() {
+            shape = Tetromino.Z_SHAPE;
+        }
+
+        @Test
+        public void is_shaped_like_an_Z() {
+            assertEquals("" +
+                    "...\n" +
+                    "ZZ.\n" +
+                    ".ZZ\n", shape.toString());
+        }
+
+        @Test
+        public void can_rotate_left() {
+            shape = shape.rotateLeft();
+            assertEquals(shape.toString(), Tetromino.Z_SHAPE_VERT.toString());
+            shape = shape.rotateLeft();
+            assertEquals(shape.toString(), Tetromino.Z_SHAPE.toString());
+            shape = shape.rotateLeft();
+            assertEquals(shape.toString(), Tetromino.Z_SHAPE_VERT.toString());
+        }
+
+        @Test
+        public void can_rotate_right() {
+            shape = shape.rotateRight();
+            assertEquals(shape, Tetromino.Z_SHAPE_VERT);
+            shape = shape.rotateRight();
+            assertEquals(shape, Tetromino.Z_SHAPE);
+            shape = shape.rotateRight();
+            assertEquals(shape, Tetromino.Z_SHAPE_VERT);
+        }
+    }
 }
